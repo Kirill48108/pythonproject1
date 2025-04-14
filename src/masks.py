@@ -1,5 +1,6 @@
 from typing import Union
 
+
 card_number: str = input("Введите номер карты :")
 account_number: str = input("Введите номер счета :")
 """Получаем данные от пользователя"""
