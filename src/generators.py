@@ -22,7 +22,7 @@ def filter_by_currency(transactions: list[dict], currency: str) -> Iterator[dict
 
 
 def transaction_descriptions(transactions: list[dict]) -> Any:
-    """который выдает номера банковских карт в формате
+    """Генератор который выдает номера банковских карт в формате
     XXXX XXXX XXXX XXXX ,где X— цифра номера карты."""
     try:
         for description_operation in transactions:
