@@ -1,4 +1,4 @@
-from generators.generators import card_number_generator,transaction_descriptions,filter_by_currency
+from src.generators import card_number_generator,transaction_descriptions,filter_by_currency
 import  pytest
 
 @pytest.mark.parametrize("transactions, currency", [
