@@ -5,7 +5,7 @@ from functools import wraps
 
 def log(filename=None):
     """Декоратор log который будет автоматически логировать начало и конец выполнения функции,
-     а также ее результаты или возникшие ошибки."""
+    а также ее результаты или возникшие ошибки."""
     if filename:
         logging.basicConfig(
             filename=filename, level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", encoding="utf-8"

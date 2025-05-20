@@ -41,8 +41,6 @@ def test_sort_by_date(date, expected):
         ),
     ],
 )
-
-
 def test_filter_by_state(state, expected):
     sample_data = [
         {"id": 41428829, "state": "EXECUTED", "date": "2019-07-03T18:35:29.512364"},

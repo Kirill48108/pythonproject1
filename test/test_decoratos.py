@@ -1,5 +1,5 @@
-import pytest
 from src.decorators import log
+
 
 def test_log():
 
@@ -20,4 +20,3 @@ def test_log():
     @log(filename="mylog.txt")
     def test_function_error(x, y):
         raise ValueError("Test error")
-
