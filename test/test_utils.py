@@ -2,7 +2,6 @@ import json
 from typing import Any
 from unittest import mock
 
-
 from src.utils import get_info_about_transactions
 
 

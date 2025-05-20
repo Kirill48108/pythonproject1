@@ -1,7 +1,8 @@
-from src.external_api import convert_transaction
+import json
 import unittest
 from unittest.mock import patch
-import json
+
+from src.external_api import convert_transaction
 
 
 class TestConvertTransaction(unittest.TestCase):
