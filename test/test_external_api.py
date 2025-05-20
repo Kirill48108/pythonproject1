@@ -1,53 +1,29 @@
 from src.external_api import convert_transaction
-from unittest.mock import patch, MagicMock
-from src.external_api import get_exch_rate
-import json
 import unittest
 from unittest.mock import patch
-
+import json
 
 
 class TestConvertTransaction(unittest.TestCase):
-    @patch('src.external_api.get_exch_rate')
-    def test_convert_transaction_usd(self, mock_get_exch_rate):
-
-        mock_get_exch_rate.return_value = 75.0
-
-        transaction = {
-            "operationAmount": {
-                "amount": 100.0,
-                "currency": {
-                    "code": "USD"
-                }
-            }
-        }
-
-
+    @patch("src.external_api.get_exch_rate")
+    def test_convert_transaction_rub(self, mock_get_exch_rate):
+        transaction = {"operationAmount": {"amount": 1000, "currency": {"code": "RUB"}}}
         result = convert_transaction(transaction)
-        self.assertEqual(result, 7500.0)
+        self.assertEqual(result, 1000)
 
-    def test_convert_transaction_rub(self):
-        transaction = {
-            "operationAmount": {
-                "amount": 100.0,
-                "currency": {
-                    "code": "RUB"
-                }
-            }
-        }
 
-        result = convert_transaction(transaction)
-        self.assertEqual(result, 100.0)
+class TestApiCall(unittest.TestCase):
+    @patch("requests.get")
+    def test_api_call(self, mock_get):
 
-if __name__ == '__main__':
+        mock_get.return_value.text = json.dumps({"rates": {"USD": 75.0}})
+        mock_get.return_value.status_code = 200
+        mock_get.return_value.json.return_value = {"rates": {"USD": 75.0}}
+        mock_get.return_value.text = json.dumps({"result": 75.0})
+
+        response = convert_transaction({"operationAmount": {"amount": 1, "currency": {"code": "USD"}}})
+        self.assertEqual(response, 75.0)
+
+
+if __name__ == "__main__":
     unittest.main()
-
-
-@patch('requests.get')
-def test_get_exch_rate(mock_get):
-
-    mock_response = MagicMock()
-    mock_response.text = json.dumps({'info': {'rate': 88.833612}})
-    mock_get.return_value = mock_response
-    assert get_exch_rate('USD', 'тут_мой_ключ_API') == 88.833612
-

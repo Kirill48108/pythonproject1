@@ -5,7 +5,7 @@ from typing import Any
 def get_info_about_transactions(path_to_file: str) -> Any:
     """Функция принимает путь к файлу с транзакциями и возвращает их"""
     try:
-     with open(path_to_file, encoding="utf-8") as file:
+        with open(path_to_file, encoding="utf-8") as file:
             data = json.load(file)
             return data
     except FileNotFoundError as expect_info:
