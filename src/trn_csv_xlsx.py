@@ -1,57 +1,48 @@
-import csv
+import logging
+import os
+from typing import Dict, List
+
 import pandas as pd
 
+from config import CSV_EXCEL_LOGS, DATA_DIR
 
-def read_xlsx_transactions(file_name: str) -> list[dict]:
-    """Функция, которая считывает данные из файла XLSX и преобразовывает в список словарей"""
-    df = pd.read_excel(file_name)
-    result = df.apply(
-        lambda row: {
-            "id": row["id"],
-            "state": row["state"],
-            "date": row["date"],
-            "operationAmount": {
-                "amount": row["amount"],
-                "currency": {"name": row["currency_name"], "code": row["currency_code"]},
-            },
-            "description": row["description"],
-            "from": row["from"],
-            "to": row["to"],
-        },
-        axis=1,
-    ).tolist()
-    return result
+# Проводим настройку логгеров для логирования в файл (уровень DEBUG)
+logger = logging.getLogger(__file__)
+logger.setLevel(logging.DEBUG)
+
+file_handler = logging.FileHandler(CSV_EXCEL_LOGS, mode="w")
+file_formatter = logging.Formatter("%(asctime)s - %(filename)s - %(funcName)s - %(levelname)s - %(message)s")
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
 
 
-if __name__ == "__main__":
-    transact_new = read_xlsx_transactions("data/transactions_excel.xlsx")
-
-
-def read_csv_transactions(file_name: str) -> list[dict]:
-    """Функция принимает файл CSV и возвращает список словарей"""
-    with open(file_name, "r", encoding="utf-8") as file:
-        reader = csv.reader(file, delimiter=";")
-        header = next(reader)
-        result = []
-        for row in reader:
-            row_dict = {
-                "id": row[header.index("id")],
-                "state": row[header.index("state")],
-                "date": row[header.index("date")],
-                "operationAmount": {
-                    "amount": row[header.index("amount")],
-                    "currency": {
-                        "name": row[header.index("currency_name")],
-                        "code": row[header.index("currency_code")],
-                    },
-                },
-                "description": row[header.index("description")],
-                "from": row[header.index("from")],
-                "to": row[header.index("to")],
-            }
-            result.append(row_dict)
-    return result
-
-
-if __name__ == "__main__":
-    transact_new = read_csv_transactions("data/transactions.csv")
+def csv_excel_reader(file_name: str) -> List[Dict]:
+    """Принимает название (путь) csv либо xlsx файла с информацией о транзакциях.
+    Возвращает список словарей транзакций."""
+    logger.info("Программа начинает работу.")
+    # Определяем вид файла и применяем необходимый метод обработки.
+    if file_name.endswith("csv"):
+        try:
+            logger.info("Программа считывает csv файл.")
+            file_with_dir = os.path.join(DATA_DIR, file_name)
+            transactions_df = pd.read_csv(file_with_dir, sep=";", decimal=",", encoding="utf-8")
+            logger.info("Программа формирует список транзакций по считанным из файла данным.")
+            result = transactions_df.to_dict(orient="records")
+            logger.info("Программа успешно завершила свою работу.")
+            return result
+        except Exception as err:
+            logger.error(f"При считывании файла произошла ошибка {err}.")
+    elif file_name.endswith("xlsx"):
+        try:
+            logger.info("Программа считывает xlsx файл.")
+            file_with_dir = os.path.join(DATA_DIR, file_name)
+            transactions_df = pd.read_excel(file_with_dir)
+            logger.info("Программа формирует список транзакций по считанным из файла данным.")
+            result = transactions_df.to_dict(orient="records")
+            logger.info("Программа успешно завершила свою работу.")
+            return result
+        except Exception as err:
+            logger.error(f"При считывании файла произошла ошибка {err}.")
+    else:
+        logger.error("Произошла ошибка ValueError: Неподдерживаемый формат файла.")
+        raise ValueError("Неподдерживаемый формат файла.")
