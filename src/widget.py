@@ -1,26 +1,34 @@
 from src.masks import get_mask_account, get_mask_card_number
 
 
-def mask_account_card(card_of_account: str) -> str:
-    """Функция принимает номер карты/счёта с указанием ее типа"""
-    card_of_account_list = card_of_account.split()
-    if "Счёт" in card_of_account_list:
-        return f"Счёт {get_mask_account(card_of_account_list[1])}"
-    elif "MasterCard" in card_of_account_list or "Maestro" in card_of_account_list:
-        return f"{card_of_account_list[0]} {get_mask_card_number(card_of_account_list[1])}"
-    elif "Visa" in card_of_account_list:
-        return f"{card_of_account_list[0]} {get_mask_card_number(card_of_account_list[1])}"
+def mask_account_card(number: str) -> str:
+    """Функция принимает на вход сообщение вида: '<Вид банковской карты/счет> <номер>' и
+    выводит замаскированный счёт карты/банковского счёта
+    в соответсвии с шаблоном: '<Вид банковской карты/счет> <*****>'
+    """
+    # Разбиваем вводные данные на вид банковской карты/счет и номер
+    number_info = number.split()
+    # Проверяем введён ли вид банковской карты/счет.
+    # В случае отсутствия вида банковской карты/счета выводим сообщение об ошибке в введённых данных.
+    if len(number_info) == 1:
+        result_message = "Ошибка в введённых данных!"
     else:
-        return "Некорректный ввод."
-        numbers_card = []
-        name_card = []
-        for i in card_of_account_list:
-            if i.isdigit():
-                numbers_card.append(i)
-            elif i.isalpha():
-                name_card.append(i)
-        str_numbers_card = "".join(numbers_card)
-        return f"{name_card[0]} {name_card[1]} {get_mask_card_number(str_numbers_card)}"
+        # Проверяем, какой номер был введён: карты либо банковского счёта.
+        # Выбираем необходимую функцию из модуля "masks".
+        # Применяем функции из модуля "masks".
+        # Проверяем результат работы функции маскировки: сообщение об ошибке либо маска.
+        # Формируем и выводим результирующее сообщение.
+        if number_info[0] == "Счет" or number_info[0] == "Счёт":
+            if "*" in get_mask_account(number_info[-1]):
+                result_message = f"{number_info[0]} {get_mask_account(number_info[-1])}"
+            else:
+                result_message = get_mask_account(number_info[-1])
+        else:
+            if "*" in get_mask_card_number(number_info[-1]):
+                result_message = f"{' '.join(number_info[:-1])} {get_mask_card_number(number_info[-1])}"
+            else:
+                result_message = get_mask_card_number(number_info[-1])
+    return result_message
 
 
 def get_date(date: str) -> str:

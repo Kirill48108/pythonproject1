@@ -21,12 +21,6 @@ def get_mask_card_number(card_number: str) -> str:
         return "Некорректный ввод."
 
 
-print(get_mask_card_number("132214415522515"))
-print(get_mask_card_number("1234567887654321"))
-print(get_mask_card_number(" "))
-print(get_mask_card_number("dsfhhhshfsh"))
-
-
 def get_mask_account(account_number: str) -> str:
     """Возвращаем замаскированный номер счета"""
     logger.info(f"Получение номера счета: {get_mask_account}")
@@ -38,9 +32,3 @@ def get_mask_account(account_number: str) -> str:
     else:
         logger.error("Некорректный ввод")
         return "Некорректный ввод."
-
-
-print(get_mask_account("132214415522515"))
-print(get_mask_account("12345678876543214567"))
-print(get_mask_account(" "))
-print(get_mask_account("dsfhhhshfsh"))

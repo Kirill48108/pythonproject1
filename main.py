@@ -1,10 +1,8 @@
 from src.trn_csv_xlsx import csv_excel_reader
 from src.utils import get_info_about_transactions
-from src.processing import state_func,date_sort_func
+from src.processing import state_func, date_sort_func
 from src.search_transactions import search_transactions
-from src.widget import get_date,mask_account_card
-
-
+from src.widget import get_date, mask_account_card
 
 
 def main() -> None:
@@ -83,7 +81,9 @@ def main() -> None:
             print("Введён некорректный ответ. Повторите ввод ответа.")
     if users_choise_rub == "да":
         rub_transactions = [
-            transaction for transaction in date_sorted_transactions if transaction ["operationAmount"]["currency"]["code"] == "RUB"
+            transaction
+            for transaction in date_sorted_transactions
+            if transaction["operationAmount"]["currency"]["code"] == "RUB"
         ]
     elif users_choise_rub == "нет":
         rub_transactions = date_sorted_transactions
@@ -110,7 +110,7 @@ def main() -> None:
         print(f"Всего банковских операций в выборке {count_of_transactions}.\n")
         for item in result_transactions:
             if item["description"] == "Открытие вклада":
-                date_str = get_date(item["date"])
+                date_str = item["date"]
                 descr_str = item["description"]
                 summa_str = item["operationAmount"]["amount"]
                 currency_str = item["operationAmount"]["currency"]["code"]
@@ -119,12 +119,12 @@ def main() -> None:
 Сумма: {summa_str} {currency_str}\n"""
                 )
             else:
-                date_str = get_date(item["date"])
+                date_str = item["date"]
                 descr_str = item["description"]
                 from_str = mask_account_card(item["from"])
                 to_str = mask_account_card(item["to"])
-                summa_str = item["operationAmount"]["amount"]
-                currency_str = item["operationAmount"]["currency"]["code"]
+                summa_str = item["amount"]
+                currency_str = item["currency_code"]
                 print(
                     f"""{date_str} {descr_str}
 {from_str} -> {to_str}
@@ -137,4 +137,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

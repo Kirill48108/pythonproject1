@@ -1,6 +1,41 @@
 import pytest
 
-from src.widget import get_date, mask_account_card
+from src.widget import mask_account_card, get_date
+
+
+@pytest.fixture
+def card_masks():
+    return "MasterCard 1234567890123456"
+
+
+def test_mask_account_card(card_masks):
+    assert mask_account_card(card_masks) == "MasterCard 1234 56** **** 3456"
+
+
+@pytest.fixture
+def bank_masks():
+    return "Счет 12345678901234567893"
+
+
+def test_mask_account_card_1(bank_masks):
+    assert mask_account_card(bank_masks) == "Счет **7893"
+
+
+@pytest.mark.parametrize(
+    "numbers, expected",
+    [
+        ("MasterCard 1234567890123456", "MasterCard 1234 56** **** 3456"),
+        ("Visa Gold A 1234567890123456", "Visa Gold A 1234 56** **** 3456"),
+        ("Счет 12345678901234567893", "Счет **7893"),
+        ("Счёт 12345678901234567893", "Счёт **7893"),
+        ("VisaGold1234567890123456", "Ошибка в введённых данных!"),
+        ("Счет12345678901234567893", "Ошибка в введённых данных!"),
+        ("Visa Gold A 123456789012345v", "Некорректный ввод."),
+        ("Счет 1234567890123456789", "Некорректный ввод."),
+    ],
+)
+def test_mask_account_card_2(numbers, expected):
+    assert mask_account_card(numbers) == expected
 
 
 @pytest.mark.parametrize(
@@ -20,21 +55,3 @@ def test_get_date_invalid_date(incorrect_date, expected):
     with pytest.raises(ValueError) as exc_info:
         get_date(incorrect_date)
     assert str(exc_info.value) == expected
-
-
-@pytest.mark.parametrize(
-    "nums,expected",
-    [
-        ("Visa 7000792289606361", "Visa 7000 79** **** 6361"),
-        ("Счётytuuikuokyyiuyuuyk", "Некорректный ввод."),
-        ("Счёт 12345678876543211234", "Счёт **1234"),
-        ("MasterCard 7158300734726758", "MasterCard 7158 30** **** 6758"),
-        ("", "Некорректный ввод."),
-        ("Maestro 5456789645321234", "Maestro 5456 78** **** 1234"),
-        ("Maestro67444444474", "Некорректный ввод."),
-        ("MasterCard35575737", "Некорректный ввод."),
-        ("Visa7765785688558", "Некорректный ввод."),
-    ],
-)
-def test_mask_account_card(nums, expected):
-    assert mask_account_card(nums) == expected

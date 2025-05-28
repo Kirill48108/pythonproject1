@@ -13,4 +13,3 @@ def date_sort_func(dict_list: List[dict], direction: bool = True) -> List[dict]:
     По-умолчанию необязательный параметр равен 'False' - убывание.
     Возвращает отсортированный  согласно направлению сортировки список словарей."""
     return sorted(dict_list, key=lambda x: datetime.fromisoformat(x["date"]), reverse=direction)
-

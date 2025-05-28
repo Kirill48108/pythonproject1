@@ -25,8 +25,3 @@ def get_info_about_transactions(path_to_file: str) -> Any:
         logger.error(f"Ошибка при чтении json-файла из файла {path_to_file}")
         print(f"Ошибка декодирования файла: {expect_info}")
         return []
-
-
-print(get_info_about_transactions("data/operations.json"))
-print(get_info_about_transactions("[]"))
-print(get_info_about_transactions("fghhdhdh"))
