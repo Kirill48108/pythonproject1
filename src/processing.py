@@ -1,13 +1,16 @@
-from typing import Dict, List
+from datetime import datetime
+from typing import List
 
 
-def filter_by_state(info_list: List[Dict], state: str = "EXECUTED") -> List[Dict]:
-    """Функция принимает список словарей и значение для ключа state(по умолчанию 'EXECUTED').
-    возвращает новый список словарей, содержащий только те словари, у которых ключ state
-    соответствует указанному значению."""
-    return [item for item in info_list if item.get("state") == state]
+def state_func(dict_list: List[dict], state: str = "EXECUTED") -> List[dict]:
+    """Функция принимает список словарей и занчение ключа 'state' по-умолчанию равного 'EXECUTED'.
+    Вщзвращает список словарей с ключом 'state' равным заданному значению"""
+    return [dictionary for dictionary in dict_list if dictionary.get("state") == state]
 
 
-def sort_by_date(info_list: List[Dict], reverse: bool = True) -> List[Dict]:
-    """Функция принимает список словарей и необязательный параметр, задающий порядок сортировки"""
-    return sorted(info_list, key=lambda x: x["date"], reverse=True)
+def date_sort_func(dict_list: List[dict], direction: bool = True) -> List[dict]:
+    """Функция принимает список словарей и необязательное значение направления сортировки - возрастание либо убывание.
+    По-умолчанию необязательный параметр равен 'False' - убывание.
+    Возвращает отсортированный  согласно направлению сортировки список словарей."""
+    return sorted(dict_list, key=lambda x: datetime.fromisoformat(x["date"]), reverse=direction)
+
